@@ -1,0 +1,14 @@
+{
+  "name": "event-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "@prisma/client": "^7.4.1",
+    "prisma": "^7.4.1"
+  }
+}
