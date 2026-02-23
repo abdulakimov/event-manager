@@ -17,6 +17,11 @@ import {
 } from "@/components/ui/table";
 import { RegistrationsTabs } from "./registrations-tabs";
 
+type EventWithRegistrations = Awaited<
+    ReturnType<typeof prisma.event.findUnique>
+>;
+type RegistrationRow = NonNullable<EventWithRegistrations>["registrations"][number];
+
 export default async function EventRegistrationsPage({
     params,
     searchParams,
@@ -105,7 +110,7 @@ export default async function EventRegistrationsPage({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {event.registrations.map((registration) => (
+                                {event.registrations.map((registration: RegistrationRow) => (
                                     <TableRow key={registration.id}>
                                         <TableCell className="font-medium">
                                             {registration.student.fullName}

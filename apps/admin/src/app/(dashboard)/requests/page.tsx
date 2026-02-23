@@ -13,6 +13,10 @@ import {
 import { RequestsTable } from "./requests-table";
 import { uz } from "@/lib/strings.uz";
 
+type AccessRequestRow = Awaited<
+    ReturnType<typeof prisma.accessRequest.findMany>
+>[number];
+
 async function approveAccessRequest(formData: FormData) {
     "use server";
 
@@ -136,7 +140,7 @@ export default async function RequestsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {requests.map((request) => (
+                                {requests.map((request: AccessRequestRow) => (
                                     <RequestsTable
                                         key={request.id}
                                         request={request}

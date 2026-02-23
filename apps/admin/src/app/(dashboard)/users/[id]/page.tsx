@@ -16,6 +16,11 @@ import {
 import { UserRegistrationsTabs } from "./registrations-tabs";
 import { uz } from "@/lib/strings.uz";
 
+type StudentWithRegistrations = Awaited<
+    ReturnType<typeof prisma.student.findUnique>
+>;
+type RegistrationRow = NonNullable<StudentWithRegistrations>["registrations"][number];
+
 export default async function UserDetailPage({
     params,
     searchParams,
@@ -155,7 +160,7 @@ export default async function UserDetailPage({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {registrationsForTab.map((registration) => (
+                                {registrationsForTab.map((registration: RegistrationRow) => (
                                     <TableRow key={registration.id}>
                                         <TableCell className="font-medium">
                                             {registration.event?.title ?? "—"}

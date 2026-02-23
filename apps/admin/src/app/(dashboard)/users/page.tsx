@@ -16,6 +16,9 @@ import { uz } from "@/lib/strings.uz";
 
 const COURSE_OPTIONS = [1, 2, 3, 4, 5];
 
+type FacultyRow = Awaited<ReturnType<typeof prisma.organizer.findMany>>[number];
+type StudentRow = Awaited<ReturnType<typeof prisma.student.findMany>>[number];
+
 function parseNumber(value?: string) {
     if (!value) return null;
     const parsed = Number(value);
@@ -80,7 +83,7 @@ export default async function UsersPage({
         take: sortValue === "active" ? 200 : undefined,
     });
 
-    const rows = students.map((student) => {
+    const rows = students.map((student: StudentRow) => {
         const totalRegistrations = student.registrations.length;
         const activeRegistrations = student.registrations.filter(
             (registration) =>
@@ -129,7 +132,7 @@ export default async function UsersPage({
                         className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                     >
                         <option value="">Barchasi</option>
-                        {faculties.map((fac) => (
+                        {faculties.map((fac: FacultyRow) => (
                             <option key={fac.id} value={fac.id}>
                                 {fac.name}
                             </option>
@@ -180,7 +183,16 @@ export default async function UsersPage({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {sortedRows.map(({ student, totalRegistrations, activeRegistrations }) => (
+                                {sortedRows.map(
+                                    ({
+                                        student,
+                                        totalRegistrations,
+                                        activeRegistrations,
+                                    }: {
+                                        student: StudentRow;
+                                        totalRegistrations: number;
+                                        activeRegistrations: number;
+                                    }) => (
                                     <TableRow key={student.id}>
                                         <TableCell className="font-medium">
                                             {student.fullName}

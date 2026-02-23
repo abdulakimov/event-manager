@@ -21,6 +21,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { uz } from "@/lib/strings.uz";
 
+type OrganizerWithCount = Awaited<
+    ReturnType<typeof prisma.organizer.findMany>
+>[number];
+type RecentEventRow = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
+
 function toStatusLabel(startsAt: Date) {
     return startsAt.getTime() < Date.now() ? "O'tgan" : "Kelgusi";
 }
@@ -145,7 +150,7 @@ export default async function DashboardPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {topOrganizers.map((organizer) => (
+                                {topOrganizers.map((organizer: OrganizerWithCount) => (
                                     <TableRow key={organizer.id}>
                                         <TableCell className="font-medium">
                                             {organizer.name}
@@ -202,7 +207,7 @@ export default async function DashboardPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {recentEvents.map((event) => (
+                                {recentEvents.map((event: RecentEventRow) => (
                                         <TableRow key={event.id}>
                                             <TableCell className="font-medium">
                                                 {event.title}

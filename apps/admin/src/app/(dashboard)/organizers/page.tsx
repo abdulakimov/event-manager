@@ -8,6 +8,8 @@ import { uz } from "@/lib/strings.uz";
 
 export const dynamic = "force-dynamic";
 
+type OrganizerRow = Awaited<ReturnType<typeof prisma.organizer.findMany>>[number];
+
 export default async function OrganizersPage() {
     const adminContext = await getAdminContext();
     const isLeader =
@@ -67,7 +69,7 @@ export default async function OrganizersPage() {
                         </div>
                     ) : (
                         <OrganizersTable
-                            organizers={organizers.map((org) => ({
+                            organizers={organizers.map((org: OrganizerRow) => ({
                                 id: org.id,
                                 name: org.name,
                                 description: org.description,

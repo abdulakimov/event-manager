@@ -6,6 +6,9 @@ import { CreateEventDialog } from "@/components/events/create-event-dialog";
 import { EventsTable } from "@/components/events/events-table";
 import { uz } from "@/lib/strings.uz";
 
+type OrganizerRow = Awaited<ReturnType<typeof prisma.organizer.findMany>>[number];
+type EventRow = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
+
 export default async function EventsPage() {
     const adminContext = await getAdminContext();
     const isLeader =
@@ -38,7 +41,7 @@ export default async function EventsPage() {
                 </div>
 
                 <CreateEventDialog
-                    organizers={organizers.map((o) => ({
+                    organizers={organizers.map((o: OrganizerRow) => ({
                         id: o.id,
                         name: o.name,
                     }))}
@@ -52,7 +55,7 @@ export default async function EventsPage() {
 
                 <CardContent>
                     <EventsTable
-                        events={events.map((event) => ({
+                        events={events.map((event: EventRow) => ({
                             id: event.id,
                             title: event.title,
                             organizerId: event.organizerId,
@@ -62,7 +65,7 @@ export default async function EventsPage() {
                                 ? { name: event.organizer.name }
                                 : null,
                         }))}
-                        organizers={organizers.map((o) => ({
+                        organizers={organizers.map((o: OrganizerRow) => ({
                             id: o.id,
                             name: o.name,
                         }))}
