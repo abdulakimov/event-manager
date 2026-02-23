@@ -68,7 +68,7 @@ export default async function OrganizersPage() {
                         </div>
                     ) : (
                         <OrganizersTable
-                            organizers={organizers.map((org: OrganizerRow) => ({
+                            organizers={organizers.map((org) => ({
                                 id: org.id,
                                 name: org.name,
                                 description: org.description,
