@@ -3,10 +3,17 @@ import ExcelJS from "exceljs";
 import { prisma } from "@/lib/prisma";
 import { getAdminContext } from "@/lib/session";
 
-type EventWithRegistrations = Awaited<
-    ReturnType<typeof prisma.event.findUnique>
->;
-type RegistrationRow = NonNullable<EventWithRegistrations>["registrations"][number];
+type RegistrationRow = {
+    student: {
+        fullName: string;
+        phone: string | null;
+        course: number;
+        faculty: string;
+        facultyOrganizer: { name: string } | null;
+        telegramId: bigint | null;
+    };
+    createdAt: Date;
+};
 
 export async function GET(
     _req: Request,
