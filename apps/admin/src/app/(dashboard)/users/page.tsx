@@ -17,7 +17,7 @@ import type { EventRegistration, Organizer, Student } from "@prisma/client";
 
 const COURSE_OPTIONS = [1, 2, 3, 4, 5];
 
-type FacultyRow = Organizer;
+type FacultyRow = { id: number; name: string };
 type StudentRow = Student & {
     facultyOrganizer: Organizer | null;
     registrations: Array<EventRegistration & { event: { startsAt: Date } | null }>;
