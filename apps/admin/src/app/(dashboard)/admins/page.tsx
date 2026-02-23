@@ -14,9 +14,9 @@ import {
 import { AdminsTable } from "./admins-table";
 import { RequestsTable } from "../requests/requests-table";
 import { uz } from "@/lib/strings.uz";
-type AdminWithOrganizer = Awaited<
-    ReturnType<typeof prisma.adminUser.findMany>
->[number];
+import type { AdminUser, Organizer } from "@prisma/client";
+
+type AdminWithOrganizer = AdminUser & { organizer: Organizer | null };
 
 type AccessRequestRow = Awaited<
     ReturnType<typeof prisma.accessRequest.findMany>
@@ -127,7 +127,7 @@ export default async function AdminsPage() {
         prisma.adminUser.findMany({
             orderBy: { createdAt: "desc" },
             include: { organizer: true },
-        }),
+        }) as Promise<AdminWithOrganizer[]>,
         prisma.organizer.findMany({
             orderBy: { name: "asc" },
             select: { id: true, name: true, type: true },

@@ -15,11 +15,13 @@ import {
 } from "@/components/ui/table";
 import { UserRegistrationsTabs } from "./registrations-tabs";
 import { uz } from "@/lib/strings.uz";
+import type { Event, EventRegistration, Organizer, Student } from "@prisma/client";
 
-type StudentWithRegistrations = Awaited<
-    ReturnType<typeof prisma.student.findUnique>
->;
-type RegistrationRow = NonNullable<StudentWithRegistrations>["registrations"][number];
+type StudentWithRegistrations = Student & {
+    facultyOrganizer: Organizer | null;
+    registrations: Array<EventRegistration & { event: Event & { organizer: Organizer | null } }>;
+};
+type RegistrationRow = StudentWithRegistrations["registrations"][number];
 
 export default async function UserDetailPage({
     params,

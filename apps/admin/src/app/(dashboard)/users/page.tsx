@@ -13,11 +13,15 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { uz } from "@/lib/strings.uz";
+import type { Event, EventRegistration, Organizer, Student } from "@prisma/client";
 
 const COURSE_OPTIONS = [1, 2, 3, 4, 5];
 
-type FacultyRow = Awaited<ReturnType<typeof prisma.organizer.findMany>>[number];
-type StudentRow = Awaited<ReturnType<typeof prisma.student.findMany>>[number];
+type FacultyRow = Organizer;
+type StudentRow = Student & {
+    facultyOrganizer: Organizer | null;
+    registrations: Array<EventRegistration & { event: Event | null }>;
+};
 
 function parseNumber(value?: string) {
     if (!value) return null;

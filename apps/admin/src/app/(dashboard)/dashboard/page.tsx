@@ -20,11 +20,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { uz } from "@/lib/strings.uz";
+import type { Event, Organizer } from "@prisma/client";
 
-type OrganizerWithCount = Awaited<
-    ReturnType<typeof prisma.organizer.findMany>
->[number];
-type RecentEventRow = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
+type OrganizerWithCount = Organizer & { _count: { events: number } };
+type RecentEventRow = Event & { organizer: Organizer | null };
 
 function toStatusLabel(startsAt: Date) {
     return startsAt.getTime() < Date.now() ? "O'tgan" : "Kelgusi";

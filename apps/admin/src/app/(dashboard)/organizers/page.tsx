@@ -5,10 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreateOrganizerDialog } from "@/components/organizers/create-organizer-dialog";
 import { OrganizersTable } from "@/components/organizers/organizers-table";
 import { uz } from "@/lib/strings.uz";
+import type { AdminUser, Organizer } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
-type OrganizerRow = Awaited<ReturnType<typeof prisma.organizer.findMany>>[number];
+type OrganizerRow = Organizer & { leaderAdminUser: AdminUser | null };
 
 export default async function OrganizersPage() {
     const adminContext = await getAdminContext();

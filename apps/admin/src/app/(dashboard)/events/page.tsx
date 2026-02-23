@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreateEventDialog } from "@/components/events/create-event-dialog";
 import { EventsTable } from "@/components/events/events-table";
 import { uz } from "@/lib/strings.uz";
+import type { Event, Organizer } from "@prisma/client";
 
-type OrganizerRow = Awaited<ReturnType<typeof prisma.organizer.findMany>>[number];
-type EventRow = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
+type OrganizerRow = Organizer;
+type EventRow = Event & { organizer: Organizer | null };
 
 export default async function EventsPage() {
     const adminContext = await getAdminContext();

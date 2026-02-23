@@ -16,11 +16,13 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { RegistrationsTabs } from "./registrations-tabs";
+import type { Event, EventRegistration, Organizer, Student } from "@prisma/client";
 
-type EventWithRegistrations = Awaited<
-    ReturnType<typeof prisma.event.findUnique>
->;
-type RegistrationRow = NonNullable<EventWithRegistrations>["registrations"][number];
+type EventWithRegistrations = Event & {
+    organizer: Organizer;
+    registrations: Array<EventRegistration & { student: Student }>;
+};
+type RegistrationRow = EventWithRegistrations["registrations"][number];
 
 export default async function EventRegistrationsPage({
     params,
