@@ -16,7 +16,7 @@ async function submitAccessRequest(
     const session = await getSession();
     const email = session?.user?.email ?? null;
     if (!email) {
-        return { status: "error", message: "Email topilmadi." };
+        return { status: "error" as const, message: "Email topilmadi." };
     }
 
     const message = (formData.get("message") as string | null)?.trim() || null;
@@ -28,7 +28,7 @@ async function submitAccessRequest(
     });
 
     if (existing?.status === "APPROVED") {
-        return { status: "noop" };
+        return { status: "noop" as const };
     }
 
     if (existing?.status === "PENDING") {
@@ -38,7 +38,7 @@ async function submitAccessRequest(
                 data: { message },
             });
         }
-        return { status: "success" };
+        return { status: "success" as const };
     }
 
     if (existing?.status === "REJECTED") {
@@ -53,7 +53,7 @@ async function submitAccessRequest(
                 name,
             },
         });
-        return { status: "success" };
+        return { status: "success" as const };
     }
 
     await prisma.accessRequest.create({
@@ -65,7 +65,7 @@ async function submitAccessRequest(
         },
     });
 
-    return { status: "success" };
+    return { status: "success" as const };
 }
 
 export default async function RequestAccessPage() {
