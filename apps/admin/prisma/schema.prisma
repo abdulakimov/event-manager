@@ -1,0 +1,205 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrganizerType {
+  CLUB
+  FACULTY
+}
+
+model Organizer {
+  id          Int            @id @default(autoincrement())
+  type        OrganizerType @default(CLUB)
+  name        String
+  description String?
+  leaderName  String?
+  leaderAdminUserId Int?
+  leaderAdminUser   AdminUser? @relation("OrganizerLeader", fields: [leaderAdminUserId], references: [id], onDelete: SetNull)
+  foundedAt   DateTime?
+  logoUrl     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events Event[]
+  facultyStudents Student[] @relation("StudentFaculty")
+  adminUsers AdminUser[]
+
+  @@unique([type, name])
+  @@index([name])
+  @@index([type])
+  @@index([leaderAdminUserId])
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  location    String
+  startsAt    DateTime
+  endsAt      DateTime?
+
+  organizerId Int
+  organizer   Organizer @relation(fields: [organizerId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registrations EventRegistration[]
+  telegramRegistrations TelegramEventRegistration[]
+
+  @@index([startsAt])
+  @@index([organizerId])
+}
+
+enum StudyMode {
+  FULL_TIME
+  PART_TIME
+}
+
+enum RegistrationStatus {
+  ACTIVE
+  CANCELED
+}
+
+enum AdminRole {
+  SUPERADMIN
+  EDITOR
+  CLUB_LEADER
+  FACULTY_LEADER
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Student {
+  id         String    @id @default(cuid())
+  telegramUserId Int   @unique
+  telegramId String    @unique
+  fullName   String
+  phone      String?
+  faculty    String
+  course     Int // 1..5
+  studyMode  StudyMode @default(FULL_TIME)
+  facultyOrganizerId Int?
+  facultyOrganizer   Organizer? @relation("StudentFaculty", fields: [facultyOrganizerId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registrations EventRegistration[]
+
+  telegramUser TelegramUser @relation(fields: [telegramUserId], references: [id])
+
+  @@index([faculty])
+  @@index([facultyOrganizerId])
+}
+
+model EventRegistration {
+  id String @id @default(cuid())
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  status RegistrationStatus @default(ACTIVE)
+  canceledAt DateTime?
+  remindedDayBeforeAt DateTime?
+  remindedHalfHourAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@unique([eventId, studentId])
+  @@index([eventId])
+  @@index([studentId])
+  @@index([status])
+  @@index([eventId, status])
+}
+
+model TelegramStudent {
+  id         Int      @id @default(autoincrement())
+  telegramId BigInt   @unique
+  fullName   String
+  faculty    String
+  course     Int
+  phone      String
+  createdAt  DateTime @default(now())
+
+  registrations TelegramEventRegistration[]
+}
+
+model TelegramEventRegistration {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  eventId   String
+  createdAt DateTime @default(now())
+
+  student TelegramStudent @relation(fields: [studentId], references: [id])
+  event   Event           @relation(fields: [eventId], references: [id])
+
+  @@unique([studentId, eventId])
+  @@index([studentId])
+  @@index([eventId])
+}
+
+model TelegramUser {
+  id         Int      @id @default(autoincrement())
+  telegramId BigInt   @unique
+  chatId     BigInt
+  username   String?
+  firstName  String?
+  lastName   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  student Student?
+}
+
+model AdminUser {
+  id          Int        @id @default(autoincrement())
+  email       String     @unique
+  name        String?
+  role        AdminRole
+  organizerId Int?
+  organizer   Organizer? @relation(fields: [organizerId], references: [id], onDelete: SetNull)
+  leadsOrganizers Organizer[] @relation("OrganizerLeader")
+
+  isActive   Boolean  @default(true)
+  disabledAt DateTime?
+  disabledBy String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AccessRequest {
+  id                   Int           @id @default(autoincrement())
+  email                String
+  name                 String?
+  message              String?
+  status               RequestStatus @default(PENDING)
+  requestedRole        AdminRole?
+  requestedOrganizerId Int?
+  reviewedAt           DateTime?
+  reviewedBy           String?
+  note                 String?
+  createdAt            DateTime @default(now())
+
+  @@index([status])
+  @@index([email])
+}
