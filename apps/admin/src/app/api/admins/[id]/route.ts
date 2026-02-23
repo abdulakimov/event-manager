@@ -28,6 +28,10 @@ export async function PATCH(
         isActive?: boolean;
     };
 
+    if (role === "SUPERADMIN" && adminContext.email !== SUPERADMIN_EMAIL) {
+        return new NextResponse("Bu amal faqat superadmin uchun", { status: 403 });
+    }
+
     const admin = await prisma.adminUser.findUnique({
         where: { id: adminId },
     });

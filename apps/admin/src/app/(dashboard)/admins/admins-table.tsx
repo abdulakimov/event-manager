@@ -50,6 +50,7 @@ const ROLE_OPTIONS = [
     { value: "EDITOR", label: "Editor" },
     { value: "CLUB_LEADER", label: "Klub rahbari" },
     { value: "FACULTY_LEADER", label: "Fakultet rahbari" },
+    { value: "SUPERADMIN", label: "Superadmin" },
 ];
 
 export function AdminsTable({
@@ -96,12 +97,16 @@ export function AdminsTable({
                 }),
             });
             if (!res.ok) {
+                if (res.status === 403) {
+                    toastError("Bu amal faqat superadmin uchun");
+                    return;
+                }
                 const msg = await res.text();
                 toastError(msg || "Xatolik");
                 return;
             }
             setEditAdmin(null);
-            toastSuccess("Admin yangilandi ✅");
+            toastSuccess("Admin roli yangilandi");
             router.refresh();
         });
     };

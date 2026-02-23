@@ -33,6 +33,7 @@ const ROLE_OPTIONS = [
     { value: "EDITOR", label: "Editor" },
     { value: "CLUB_LEADER", label: "Klub rahbari" },
     { value: "FACULTY_LEADER", label: "Fakultet rahbari" },
+    { value: "SUPERADMIN", label: "Superadmin" },
 ];
 
 export function RequestsTable({

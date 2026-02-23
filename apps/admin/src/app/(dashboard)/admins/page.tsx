@@ -15,6 +15,8 @@ import { AdminsTable } from "./admins-table";
 import { RequestsTable } from "../requests/requests-table";
 import { uz } from "@/lib/strings.uz";
 
+const SUPERADMIN_EMAIL = "xurshidbekabdulakimov@gmail.com";
+
 async function approveAccessRequest(formData: FormData) {
     "use server";
 
@@ -29,6 +31,10 @@ async function approveAccessRequest(formData: FormData) {
     const role = String(formData.get("role"));
     const organizerIdRaw = formData.get("organizerId");
     const note = (formData.get("note") as string | null)?.trim() || null;
+
+    if (role === "SUPERADMIN" && adminContext.email !== SUPERADMIN_EMAIL) {
+        throw new Error("Bu amal faqat superadmin uchun");
+    }
 
     const organizerId = organizerIdRaw ? Number(organizerIdRaw) : null;
     const requiresOrganizer = role === "CLUB_LEADER" || role === "FACULTY_LEADER";
