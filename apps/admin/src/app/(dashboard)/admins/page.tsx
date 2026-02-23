@@ -18,6 +18,10 @@ type AdminWithOrganizer = Awaited<
     ReturnType<typeof prisma.adminUser.findMany>
 >[number];
 
+type AccessRequestRow = Awaited<
+    ReturnType<typeof prisma.accessRequest.findMany>
+>[number];
+
 async function approveAccessRequest(formData: FormData) {
     "use server";
 
@@ -195,7 +199,7 @@ export default async function AdminsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {requests.map((request) => (
+                                {requests.map((request: AccessRequestRow) => (
                                     <RequestsTable
                                         key={request.id}
                                         request={request}
