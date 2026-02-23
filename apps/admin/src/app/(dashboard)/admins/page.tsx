@@ -14,11 +14,9 @@ import {
 import { AdminsTable } from "./admins-table";
 import { RequestsTable } from "../requests/requests-table";
 import { uz } from "@/lib/strings.uz";
-import type { Prisma } from "@prisma/client";
-
-type AdminWithOrganizer = Prisma.AdminUserGetPayload<{
-    include: { organizer: true };
-}>;
+type AdminWithOrganizer = Awaited<
+    ReturnType<typeof prisma.adminUser.findMany>
+>[number];
 
 async function approveAccessRequest(formData: FormData) {
     "use server";
