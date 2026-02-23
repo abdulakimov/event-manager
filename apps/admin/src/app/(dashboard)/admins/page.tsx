@@ -14,6 +14,11 @@ import {
 import { AdminsTable } from "./admins-table";
 import { RequestsTable } from "../requests/requests-table";
 import { uz } from "@/lib/strings.uz";
+import type { Prisma } from "@prisma/client";
+
+type AdminWithOrganizer = Prisma.AdminUserGetPayload<{
+    include: { organizer: true };
+}>;
 
 async function approveAccessRequest(formData: FormData) {
     "use server";
@@ -158,7 +163,7 @@ export default async function AdminsPage() {
                                 </TableRow>
                             </TableHeader>
                             <AdminsTable
-                                admins={admins.map((admin) => ({
+                                admins={admins.map((admin: AdminWithOrganizer) => ({
                                     id: admin.id,
                                     email: admin.email,
                                     name: admin.name,
