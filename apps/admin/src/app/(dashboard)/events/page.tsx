@@ -5,10 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreateEventDialog } from "@/components/events/create-event-dialog";
 import { EventsTable } from "@/components/events/events-table";
 import { uz } from "@/lib/strings.uz";
-import type { Event, Organizer } from "@prisma/client";
-
-type OrganizerRow = Organizer;
-type EventRow = Event & { organizer: Organizer | null };
 
 export default async function EventsPage() {
     const adminContext = await getAdminContext();
@@ -42,7 +38,7 @@ export default async function EventsPage() {
                 </div>
 
                 <CreateEventDialog
-                    organizers={organizers.map((o: OrganizerRow) => ({
+                    organizers={organizers.map((o) => ({
                         id: o.id,
                         name: o.name,
                     }))}
@@ -56,7 +52,7 @@ export default async function EventsPage() {
 
                 <CardContent>
                     <EventsTable
-                        events={events.map((event: EventRow) => ({
+                        events={events.map((event) => ({
                             id: event.id,
                             title: event.title,
                             organizerId: event.organizerId,
@@ -66,7 +62,7 @@ export default async function EventsPage() {
                                 ? { name: event.organizer.name }
                                 : null,
                         }))}
-                        organizers={organizers.map((o: OrganizerRow) => ({
+                        organizers={organizers.map((o) => ({
                             id: o.id,
                             name: o.name,
                         }))}

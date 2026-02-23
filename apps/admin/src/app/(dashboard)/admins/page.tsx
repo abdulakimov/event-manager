@@ -14,13 +14,6 @@ import {
 import { AdminsTable } from "./admins-table";
 import { RequestsTable } from "../requests/requests-table";
 import { uz } from "@/lib/strings.uz";
-import type { AdminUser, Organizer } from "@prisma/client";
-
-type AdminWithOrganizer = AdminUser & { organizer: Organizer | null };
-
-type AccessRequestRow = Awaited<
-    ReturnType<typeof prisma.accessRequest.findMany>
->[number];
 
 async function approveAccessRequest(formData: FormData) {
     "use server";
@@ -127,7 +120,7 @@ export default async function AdminsPage() {
         prisma.adminUser.findMany({
             orderBy: { createdAt: "desc" },
             include: { organizer: true },
-        }) as Promise<AdminWithOrganizer[]>,
+        }),
         prisma.organizer.findMany({
             orderBy: { name: "asc" },
             select: { id: true, name: true, type: true },
@@ -165,7 +158,7 @@ export default async function AdminsPage() {
                                 </TableRow>
                             </TableHeader>
                             <AdminsTable
-                                admins={admins.map((admin: AdminWithOrganizer) => ({
+                                admins={admins.map((admin) => ({
                                     id: admin.id,
                                     email: admin.email,
                                     name: admin.name,
@@ -199,7 +192,7 @@ export default async function AdminsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {requests.map((request: AccessRequestRow) => (
+                                {requests.map((request) => (
                                     <RequestsTable
                                         key={request.id}
                                         request={request}

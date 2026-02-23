@@ -3,18 +3,6 @@ import ExcelJS from "exceljs";
 import { prisma } from "@/lib/prisma";
 import { getAdminContext } from "@/lib/session";
 
-type RegistrationRow = {
-    student: {
-        fullName: string;
-        phone: string | null;
-        course: number;
-        faculty: string;
-        facultyOrganizer: { name: string } | null;
-        telegramId: bigint | null;
-    };
-    createdAt: Date;
-};
-
 export async function GET(
     _req: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -29,11 +17,6 @@ export async function GET(
         where: { id },
         include: {
             organizer: true,
-            registrations: {
-                where: { status: "ACTIVE" },
-                include: { student: { include: { facultyOrganizer: true } } },
-                orderBy: { createdAt: "desc" },
-            },
         },
     });
 
@@ -56,6 +39,26 @@ export async function GET(
     sheet.addRow(["Starts At", event.startsAt.toLocaleString()]);
     sheet.addRow([]);
 
+    const registrations = await prisma.eventRegistration.findMany({
+        where: { eventId: id, status: "ACTIVE" },
+        orderBy: { createdAt: "desc" },
+        select: {
+            createdAt: true,
+            student: {
+                select: {
+                    fullName: true,
+                    phone: true,
+                    course: true,
+                    faculty: true,
+                    facultyOrganizer: { select: { name: true } },
+                    telegramId: true,
+                    telegramUser: { select: { telegramId: true } },
+                },
+            },
+        },
+    });
+    type Registration = typeof registrations[number];
+
     const header = [
         "#",
         "Full Name",
@@ -67,7 +70,11 @@ export async function GET(
     ];
     sheet.addRow(header);
 
-    event.registrations.forEach((registration: RegistrationRow, index: number) => {
+    registrations.forEach((registration: Registration, index: number) => {
+        const telegramId =
+            registration.student.telegramUser?.telegramId ??
+            registration.student.telegramId ??
+            "";
         sheet.addRow([
             index + 1,
             registration.student.fullName,
@@ -76,7 +83,7 @@ export async function GET(
             registration.student.facultyOrganizer?.name ??
                 registration.student.faculty ??
                 "",
-            registration.student.telegramId ?? "",
+            telegramId ? String(telegramId) : "",
             registration.createdAt.toLocaleString(),
         ]);
     });
@@ -93,7 +100,7 @@ export async function GET(
 
     const buffer = await workbook.xlsx.writeBuffer();
     const sanitizedTitle = event.title.replace(/[\\/:*?"<>|]+/g, " ").trim();
-    const count = event.registrations.length;
+    const count = registrations.length;
     const filename = `${sanitizedTitle} - ${count} ta talaba.xlsx`;
 
     return new NextResponse(buffer, {

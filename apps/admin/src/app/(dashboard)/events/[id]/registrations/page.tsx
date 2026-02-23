@@ -16,13 +16,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { RegistrationsTabs } from "./registrations-tabs";
-import type { Event, EventRegistration, Organizer, Student } from "@prisma/client";
-
-type EventWithRegistrations = Event & {
-    organizer: Organizer;
-    registrations: Array<EventRegistration & { student: Student }>;
-};
-type RegistrationRow = EventWithRegistrations["registrations"][number];
 
 export default async function EventRegistrationsPage({
     params,
@@ -112,7 +105,7 @@ export default async function EventRegistrationsPage({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {event.registrations.map((registration: RegistrationRow) => (
+                                {event.registrations.map((registration) => (
                                     <TableRow key={registration.id}>
                                         <TableCell className="font-medium">
                                             {registration.student.fullName}

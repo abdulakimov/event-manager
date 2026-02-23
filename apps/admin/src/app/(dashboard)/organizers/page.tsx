@@ -5,12 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreateOrganizerDialog } from "@/components/organizers/create-organizer-dialog";
 import { OrganizersTable } from "@/components/organizers/organizers-table";
 import { uz } from "@/lib/strings.uz";
-import type { Organizer } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
-type LeaderAdminUserRow = { id: number; name: string | null; email: string };
-type OrganizerRow = Organizer & { leaderAdminUser: LeaderAdminUserRow | null };
 
 export default async function OrganizersPage() {
     const adminContext = await getAdminContext();
@@ -29,7 +26,7 @@ export default async function OrganizersPage() {
                     select: { id: true, name: true, email: true },
                 },
             },
-        }) as Promise<OrganizerRow[]>,
+        }),
         prisma.adminUser.findMany({
             where: { role: { in: ["CLUB_LEADER", "FACULTY_LEADER"] } },
             orderBy: { email: "asc" },

@@ -20,10 +20,6 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { uz } from "@/lib/strings.uz";
-import type { Event, Organizer } from "@prisma/client";
-
-type OrganizerWithCount = Organizer & { _count: { events: number } };
-type RecentEventRow = Event & { organizer: Organizer | null };
 
 function toStatusLabel(startsAt: Date) {
     return startsAt.getTime() < Date.now() ? "O'tgan" : "Kelgusi";
@@ -149,7 +145,7 @@ export default async function DashboardPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {topOrganizers.map((organizer: OrganizerWithCount) => (
+                                {topOrganizers.map((organizer) => (
                                     <TableRow key={organizer.id}>
                                         <TableCell className="font-medium">
                                             {organizer.name}
@@ -206,7 +202,7 @@ export default async function DashboardPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                {recentEvents.map((event: RecentEventRow) => (
+                                {recentEvents.map((event) => (
                                         <TableRow key={event.id}>
                                             <TableCell className="font-medium">
                                                 {event.title}

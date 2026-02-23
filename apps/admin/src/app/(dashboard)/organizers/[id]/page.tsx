@@ -16,8 +16,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-type RecentEventRow = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
-
 export default async function OrganizerDetailPage({
     params,
 }: {
@@ -142,7 +140,7 @@ export default async function OrganizerDetailPage({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {recentEvents.map((event: RecentEventRow) => (
+                                {recentEvents.map((event) => (
                                     <TableRow key={event.id}>
                                         <TableCell className="font-medium">
                                             {event.title}

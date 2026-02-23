@@ -15,13 +15,6 @@ import {
 } from "@/components/ui/table";
 import { UserRegistrationsTabs } from "./registrations-tabs";
 import { uz } from "@/lib/strings.uz";
-import type { Event, EventRegistration, Organizer, Student } from "@prisma/client";
-
-type StudentWithRegistrations = Student & {
-    facultyOrganizer: Organizer | null;
-    registrations: Array<EventRegistration & { event: Event & { organizer: Organizer | null } }>;
-};
-type RegistrationRow = StudentWithRegistrations["registrations"][number];
 
 export default async function UserDetailPage({
     params,
@@ -54,19 +47,19 @@ export default async function UserDetailPage({
 
     const totalRegistrations = student.registrations.length;
     const activeRegistrations = student.registrations.filter(
-        (registration: RegistrationRow) =>
+        (registration) =>
             registration.status === "ACTIVE" &&
             registration.event?.startsAt &&
             registration.event.startsAt >= now
     );
     const pastRegistrations = student.registrations.filter(
-        (registration: RegistrationRow) =>
+        (registration) =>
             registration.status === "ACTIVE" &&
             registration.event?.startsAt &&
             registration.event.startsAt < now
     );
     const canceledRegistrations = student.registrations.filter(
-        (registration: RegistrationRow) => registration.status === "CANCELED"
+        (registration) => registration.status === "CANCELED"
     );
 
     const registrationsForTab =
@@ -162,7 +155,7 @@ export default async function UserDetailPage({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {registrationsForTab.map((registration: RegistrationRow) => (
+                                {registrationsForTab.map((registration) => (
                                     <TableRow key={registration.id}>
                                         <TableCell className="font-medium">
                                             {registration.event?.title ?? "—"}
