@@ -54,10 +54,10 @@ export function RequestsTable({
 
     const availableOrganizers = useMemo(() => {
         if (role === "CLUB_LEADER") {
-            return organizers.filter((org) => org.type === "CLUB");
+            return organizers.filter((org: Organizer) => org.type === "CLUB");
         }
         if (role === "FACULTY_LEADER") {
-            return organizers.filter((org) => org.type === "FACULTY");
+            return organizers.filter((org: Organizer) => org.type === "FACULTY");
         }
         return [];
     }, [role, organizers]);

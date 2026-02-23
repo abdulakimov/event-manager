@@ -40,7 +40,7 @@ export default function EventRegistrationsLoading() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {Array.from({ length: 6 }).map((_, index) => (
+                                {Array.from({ length: 6 }).map((_: undefined, index: number) => (
                                     <TableRow key={index}>
                                         <TableCell>
                                             <SkeletonLine width="w-40" />

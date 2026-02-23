@@ -68,10 +68,10 @@ export function AdminsTable({
 
     const availableOrganizers = useMemo(() => {
         if (role === "CLUB_LEADER") {
-            return organizers.filter((org) => org.type === "CLUB");
+            return organizers.filter((org: Organizer) => org.type === "CLUB");
         }
         if (role === "FACULTY_LEADER") {
-            return organizers.filter((org) => org.type === "FACULTY");
+            return organizers.filter((org: Organizer) => org.type === "FACULTY");
         }
         return [];
     }, [role, organizers]);
@@ -144,7 +144,7 @@ export function AdminsTable({
         <TooltipProvider>
             <>
             <TableBody>
-                {admins.map((admin) => {
+                {admins.map((admin: AdminUserRow) => {
                     const isSuperAdminAccount = admin.email === SUPERADMIN_EMAIL;
                     const toggleLabel = admin.isActive ? "Bloklash" : "Blokdan chiqarish";
                     return (

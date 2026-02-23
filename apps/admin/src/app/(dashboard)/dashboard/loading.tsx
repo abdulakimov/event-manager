@@ -14,7 +14,7 @@ export default function DashboardLoading() {
     return (
         <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {Array.from({ length: 4 }).map((_, index) => (
+                {Array.from({ length: 4 }).map((_: undefined, index: number) => (
                     <Card key={index}>
                         <CardHeader className="space-y-1">
                             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -44,7 +44,7 @@ export default function DashboardLoading() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {Array.from({ length: 6 }).map((_, index) => (
+                                {Array.from({ length: 6 }).map((_: undefined, index: number) => (
                                     <TableRow key={index}>
                                         <TableCell>
                                             <Skeleton className="h-4 w-40" />

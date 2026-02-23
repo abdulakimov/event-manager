@@ -86,7 +86,7 @@ export default async function UsersPage({
     const rows = students.map((student: StudentRow) => {
         const totalRegistrations = student.registrations.length;
         const activeRegistrations = student.registrations.filter(
-            (registration) =>
+            (registration: StudentRow["registrations"][number]) =>
                 registration.status === "ACTIVE" &&
                 registration.event?.startsAt &&
                 registration.event.startsAt >= now

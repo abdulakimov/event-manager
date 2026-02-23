@@ -3,6 +3,11 @@ import ExcelJS from "exceljs";
 import { prisma } from "@/lib/prisma";
 import { getAdminContext } from "@/lib/session";
 
+type EventWithRegistrations = Awaited<
+    ReturnType<typeof prisma.event.findUnique>
+>;
+type RegistrationRow = NonNullable<EventWithRegistrations>["registrations"][number];
+
 export async function GET(
     _req: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -55,7 +60,7 @@ export async function GET(
     ];
     sheet.addRow(header);
 
-    event.registrations.forEach((registration, index) => {
+    event.registrations.forEach((registration: RegistrationRow, index: number) => {
         sheet.addRow([
             index + 1,
             registration.student.fullName,
