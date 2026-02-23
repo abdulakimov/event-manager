@@ -52,19 +52,19 @@ export default async function UserDetailPage({
 
     const totalRegistrations = student.registrations.length;
     const activeRegistrations = student.registrations.filter(
-        (registration) =>
+        (registration: RegistrationRow) =>
             registration.status === "ACTIVE" &&
             registration.event?.startsAt &&
             registration.event.startsAt >= now
     );
     const pastRegistrations = student.registrations.filter(
-        (registration) =>
+        (registration: RegistrationRow) =>
             registration.status === "ACTIVE" &&
             registration.event?.startsAt &&
             registration.event.startsAt < now
     );
     const canceledRegistrations = student.registrations.filter(
-        (registration) => registration.status === "CANCELED"
+        (registration: RegistrationRow) => registration.status === "CANCELED"
     );
 
     const registrationsForTab =
